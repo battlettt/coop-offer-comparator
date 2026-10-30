@@ -1,0 +1,12 @@
+{
+  "_note": "SYNTHETIC EXAMPLE test fixture: made-up edge values (typo-sized amounts, long hours, decimals) for parity checks.",
+  "offers": [
+    {"label": "typo rent (synthetic)", "city": "Toronto", "hourly_rate": 22.75, "hours_per_week": 65, "term_weeks": 8,
+     "arrangement": "onsite", "rent_per_month": 250000000, "commute": {"mode": "transit"}},
+    {"label": "negative big (synthetic)", "city": "Toronto", "hourly_rate": 22.75, "hours_per_week": 35.5, "term_weeks": 8,
+     "arrangement": "onsite", "rent_per_month": -100000000000000000, "commute": {"mode": "transit"}},
+    {"label": "decimals ok (synthetic)", "city": "Ottawa", "hourly_rate": 19.33, "hours_per_week": 37.5, "term_weeks": 13,
+     "arrangement": "hybrid", "rent_per_month": 1333.33, "commute": {"mode": "driving", "km_per_day": 12.5, "cost_per_km": 0.29},
+     "lump_sums": [{"name": "relocation", "amount": 499.99, "taxable": false}]}
+  ]
+}

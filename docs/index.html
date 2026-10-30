@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Co-op Offer Comparator: compare offers by real take-home pay (estimates)</title>
+<meta name="description" content="Compare co-op job offers by estimated take-home pay after tax, rent and commuting, not by headline salary. Runs entirely in your browser. Estimates only.">
+<style>
+:root{
+  --bg:#fbfaf7; --panel:#ffffff; --ink:#1b1b1b; --ink-2:#4a4944; --rule:#8a877e; --soft:#e6e3da;
+  --accent:#0b5e57; --accent-ink:#ffffff; --warn-bg:#fff4e0; --warn:#7a4100; --err:#a1260f; --err-bg:#fdecea;
+  --bar:#0b5e57; --bar-neg:#a1260f;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141413; --panel:#1d1d1b; --ink:#efede6; --ink-2:#c3c1b8; --rule:#8f8c83; --soft:#2c2c29;
+    --accent:#5cc8bb; --accent-ink:#0d1f1d; --warn-bg:#2e2310; --warn:#f2c27a; --err:#ff9c87; --err-bg:#341a15;
+    --bar:#5cc8bb; --bar-neg:#ff9c87}
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:1rem/1.55 var(--sans)}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.skip{position:absolute;left:1rem;top:-3rem;background:var(--ink);color:var(--bg);padding:.5rem .8rem;border-radius:4px;z-index:5}
+.skip:focus{top:.75rem}
+.wrap{max-width:72rem;margin:0 auto;padding:0 1rem}
+header{padding:2rem 0 1rem}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15;margin:0 0 .5rem}
+h2{font-size:1.4rem;margin:2rem 0 .75rem}
+h3{font-size:1.1rem;margin:1.5rem 0 .5rem}
+.lede{font-size:1.1rem;color:var(--ink-2);max-width:46rem;margin:0}
+.disclaimer{border:2px solid var(--warn);background:var(--warn-bg);color:var(--ink);padding:.75rem 1rem;border-radius:6px;margin:1rem 0}
+.disclaimer strong{color:var(--warn)}
+.toolbar{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;margin:1rem 0}
+button{font:inherit;cursor:pointer;border-radius:6px;padding:.55rem .95rem;min-height:2.75rem;border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:600}
+button.secondary{background:transparent;color:var(--accent)}
+button.small{min-height:2.75rem;padding:.35rem .7rem;font-size:.9rem;font-weight:500}
+button:disabled{opacity:.55;cursor:not-allowed}
+.note{color:var(--ink-2);font-size:.95rem}
+.example-note{border-left:4px solid var(--warn);padding:.4rem .8rem;background:var(--warn-bg)}
+#offers{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(20rem,1fr));padding:0;margin:0;list-style:none}
+.offer{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:1rem}
+.offer>fieldset{border:0;margin:0;padding:0;min-width:0}
+.offer legend{font-weight:700;font-size:1.1rem;padding:0;margin-bottom:.5rem}
+.row{display:grid;gap:.6rem;grid-template-columns:1fr 1fr;margin:.5rem 0}
+.row.one{grid-template-columns:1fr}
+label,.lbl{display:block;font-weight:600;font-size:.92rem}
+input,select,textarea{font:inherit;width:100%;margin-top:.2rem;padding:.45rem .55rem;min-height:2.75rem;border:1px solid var(--rule);border-radius:5px;background:var(--bg);color:var(--ink)}
+textarea{min-height:4.2rem;resize:vertical}
+fieldset.sub{border:1px solid var(--soft);border-radius:6px;margin:.6rem 0;padding:.5rem .7rem}
+fieldset.sub legend{font-size:.95rem;font-weight:600;padding:0 .25rem;margin:0}
+.radios{display:flex;gap:1.25rem;flex-wrap:wrap}
+.radios label{display:flex;align-items:center;gap:.4rem;font-weight:500;min-height:2.75rem}
+.radios input{width:1.15rem;height:1.15rem;min-height:0;margin:0}
+.presets{display:flex;flex-wrap:wrap;gap:.4rem;margin:.3rem 0}
+.hint{display:block;font-weight:400;font-size:.85rem;color:var(--ink-2)}
+.src{font-weight:500;font-size:.8rem;color:var(--warn);margin-left:.35rem}
+#issues{border:2px solid var(--err);background:var(--err-bg);border-radius:6px;padding:.5rem 1rem;margin:1rem 0}
+#issues h3{margin:.3rem 0}
+#issues li.error strong{color:var(--err)}
+#issues li.warning strong{color:var(--warn)}
+.scroll{overflow-x:auto;margin:.5rem 0}
+table{border-collapse:collapse;width:100%;background:var(--panel);font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--rule);padding:.4rem .6rem;text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--soft)}
+tbody th{text-align:left;font-weight:600}
+td.txt{text-align:left;min-width:16rem}
+tr.total th,tr.total td{font-weight:700;background:var(--soft)}
+.tied{display:inline-block;font-size:.8rem;border:1px solid var(--warn);color:var(--warn);border-radius:3px;padding:0 .3rem}
+.chart{margin:1rem 0;padding:1rem;background:var(--panel);border:1px solid var(--rule);border-radius:8px}
+.chart figcaption{font-weight:600;margin-bottom:.6rem}
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+.bars li{display:grid;grid-template-columns:minmax(8rem,14rem) 1fr auto;gap:.6rem;align-items:center}
+.bar-track{background:var(--soft);border-radius:3px;height:1.4rem;overflow:hidden}
+.bar{display:block;height:100%;background:var(--bar)}
+.bar.neg{background:repeating-linear-gradient(45deg,var(--bar-neg) 0 6px,transparent 6px 10px)}
+.bar-value{font-weight:700;font-variant-numeric:tabular-nums}
+@media (max-width:36rem){.bars li{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+.be{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:1rem}
+#be-out{margin:.75rem 0 0;font-weight:600;min-height:1.5rem}
+.prov li,.teach li{margin:.25rem 0}
+footer{margin:3rem 0 2rem;border-top:1px solid var(--rule);padding-top:1rem}
+[aria-invalid="true"]{border:2px solid var(--err);background:var(--err-bg)}
+#results-h:focus{outline:none}
+#results-h:focus-visible{outline:3px solid var(--accent)}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the comparison</a>
+<header class="wrap">
+  <h1>Co-op Offer Comparator</h1>
+  <p class="lede">Compare co-op offers by what you actually keep: pay after estimated tax, CPP and EI, minus rent, commuting and moving costs. A higher hourly rate in a pricier city can leave you with less.</p>
+  <p class="disclaimer" id="disclaimer"><strong>Estimates only.</strong> Not payroll, tax, or financial advice. Tax, CPP/QPP, EI and QPIP use simplified 2026 brackets and rates; city rent and transit presets are rough 2026 planning figures, not quotes. Your real paycheque will differ. Everything runs in your browser; nothing is sent anywhere.</p>
+</header>
+
+<main id="main" class="wrap">
+  <h2 id="offers-h">1. Your offers</h2>
+  <p class="note">Up to four offers. Fill in pay, term, rent and commute. City buttons fill in a rent and transit-pass <em>estimate</em> you can overwrite.</p>
+  <div class="toolbar">
+    <button type="button" id="load-example" class="secondary">Load SYNTHETIC EXAMPLE (2 made-up offers)</button>
+    <button type="button" id="add-offer">Add an offer</button>
+    <span id="offer-count" class="note" aria-live="polite"></span>
+  </div>
+  <p id="example-note" class="example-note" hidden><strong>SYNTHETIC EXAMPLE loaded.</strong> These two offers are made up for teaching; they are not real employers or real pay.</p>
+
+  <ul id="offers" aria-labelledby="offers-h"></ul>
+
+  <div id="issues" role="status" aria-live="polite" hidden></div>
+
+  <h2 id="results-h" tabindex="-1">2. Comparison</h2>
+  <p id="summary" class="note" role="status" aria-live="polite"></p>
+  <div id="results"></div>
+
+  <h2 id="be-h">3. Break-even: same salary, different life</h2>
+  <div class="be" role="group" aria-labelledby="be-h">
+    <p class="note">How much would one offer have to pay for its monthly take-home to match another's? Rent, commute and other costs stay as entered; only pay moves.</p>
+    <div class="row">
+      <div><label for="be-target">Match the take-home of</label><select id="be-target"></select></div>
+      <div><label for="be-adjust">By raising the pay of</label><select id="be-adjust"></select></div>
+    </div>
+    <button type="button" id="be-run">Calculate break-even pay</button>
+    <p id="be-out" role="status" aria-live="polite"></p>
+  </div>
+
+  <h2>4. What the numbers mean</h2>
+  <ul class="teach">
+    <li><strong>Gross</strong> is pay before anything comes off. <strong>Net</strong> is what reaches your bank account after income tax, CPP (QPP in Quebec), EI and, in Quebec, QPIP.</li>
+    <li><strong>Take-home</strong> here means net pay minus the cost of living there: rent, commute, other monthly costs, and one-time moving costs, plus any signing bonus after its tax.</li>
+    <li>Compare by <strong>per month</strong> (or per week). A 24-week term always looks bigger than a 16-week term on whole-term totals.</li>
+    <li>Income tax is estimated by <strong>annualising</strong>: the term's pay is scaled up to a full year, taxed with yearly brackets, then scaled back. That mirrors how payroll withholds.</li>
+    <li>Offers within <strong>$25/month</strong> are marked <em>about tied</em>: the estimates are not that precise.</li>
+  </ul>
+  <p class="note">Longer lessons: <a href="https://github.com/battlettt/coop-offer-comparator/blob/main/docs/money-concepts.md">money concepts for beginners</a> &middot; <a href="https://github.com/battlettt/coop-offer-comparator">source and command-line tool</a>.</p>
+</main>
+
+<footer class="wrap">
+  <p class="disclaimer"><strong>Disclaimer:</strong> every figure on this page is an estimate with stated assumptions (one month = 4.333 weeks; this term is your only job this year; simplified 2026 tax brackets; rough 2026 rent and transit presets). It is not payroll, tax, or financial advice. Check numbers that matter with the employer's payroll team or the CRA / Revenu Quebec.</p>
+</footer>
+
+<template id="offer-template">
+  <li class="offer">
+    <fieldset>
+      <legend>Offer <span class="offer-num">1</span></legend>
+      <div class="row one"><div><label data-id for="o-label">Label (employer and role)</label><input data-id id="o-label" data-f="label" type="text" autocomplete="off"></div></div>
+      <div class="row">
+        <div><label data-id for="o-city">City</label><input data-id id="o-city" data-f="city" type="text" autocomplete="off"></div>
+        <div><label data-id for="o-prov">Province (for tax)</label>
+          <select data-id id="o-prov" data-f="province">
+            <option value="">From city, else Ontario</option>
+            <option>Ontario</option><option>British Columbia</option><option>Quebec</option><option>Alberta</option>
+          </select></div>
+      </div>
+      <div class="presets" role="group" aria-label="Fill rent and transit estimates for a city">
+        <button type="button" class="secondary small" data-preset-city="Toronto">Toronto</button>
+        <button type="button" class="secondary small" data-preset-city="Waterloo">Waterloo</button>
+        <button type="button" class="secondary small" data-preset-city="Ottawa">Ottawa</button>
+        <button type="button" class="secondary small" data-preset-city="Vancouver">Vancouver</button>
+        <button type="button" class="secondary small" data-preset-city="Montreal">Montreal</button>
+        <button type="button" class="secondary small" data-preset-city="Calgary">Calgary</button>
+      </div>
+      <span class="hint">City buttons fill rough 2026 estimates, not quotes.</span>
+
+      <fieldset class="sub"><legend>Pay</legend>
+        <div class="radios">
+          <label><input data-id type="radio" name="o-pay" data-f="pay_style" value="hourly" checked> Hourly</label>
+          <label><input data-id type="radio" name="o-pay" data-f="pay_style" value="salary"> Annual salary</label>
+        </div>
+        <div class="row pay-hourly">
+          <div><label data-id for="o-rate">Hourly rate ($)</label><input data-id id="o-rate" data-f="hourly_rate" type="text" inputmode="decimal"></div>
+          <div><label data-id for="o-hours">Hours per week</label><input data-id id="o-hours" data-f="hours_per_week" type="text" inputmode="decimal"></div>
+        </div>
+        <div class="row one pay-salary"><div><label data-id for="o-salary">Annual salary ($/year)</label><input data-id id="o-salary" data-f="annual_salary" type="text" inputmode="decimal"></div></div>
+      </fieldset>
+
+      <div class="row">
+        <div><label data-id for="o-weeks">Term length (weeks)</label><input data-id id="o-weeks" data-f="term_weeks" type="text" inputmode="numeric"></div>
+        <div><label data-id for="o-arr">Work arrangement</label>
+          <select data-id id="o-arr" data-f="arrangement"><option value="onsite">Onsite</option><option value="hybrid">Hybrid</option><option value="remote">Remote</option></select></div>
+      </div>
+      <div class="row one"><div><label data-id for="o-rent">Rent per month ($)<span class="src"></span></label><input data-id id="o-rent" data-f="rent" type="text" inputmode="decimal"></div></div>
+
+      <fieldset class="sub"><legend>Commute</legend>
+        <div class="row one"><div><label data-id for="o-mode">How you get to work</label>
+          <select data-id id="o-mode" data-f="mode"><option value="transit">Transit pass</option><option value="driving">Driving</option><option value="none">None (remote)</option></select></div></div>
+        <div class="row one c-transit"><div><label data-id for="o-transit">Transit pass per month ($)<span class="src"></span></label><input data-id id="o-transit" data-f="transit" type="text" inputmode="decimal"></div></div>
+        <div class="row c-driving">
+          <div><label data-id for="o-km">Km per day (round trip)</label><input data-id id="o-km" data-f="km" type="text" inputmode="decimal"></div>
+          <div><label data-id for="o-ckm">Cost per km ($)</label><input data-id id="o-ckm" data-f="cost_km" type="text" inputmode="decimal"></div>
+          <div><label data-id for="o-park">Parking per month ($)</label><input data-id id="o-park" data-f="parking" type="text" inputmode="decimal"></div>
+          <div><label data-id for="o-days">Driving days per week</label><input data-id id="o-days" data-f="days" type="text" inputmode="decimal"></div>
+        </div>
+      </fieldset>
+
+      <div class="row one"><div><label data-id for="o-other">Other monthly costs</label><span class="hint" data-id id="o-other-h">One per line: name, amount (e.g. phone, 45)</span><textarea data-id id="o-other" data-f="other" aria-describedby="o-other-h"></textarea></div></div>
+      <div class="row one"><div><label data-id for="o-moving">One-time moving costs</label><span class="hint" data-id id="o-moving-h">One per line: name, amount (e.g. moving van, 350)</span><textarea data-id id="o-moving" data-f="moving" aria-describedby="o-moving-h"></textarea></div></div>
+      <div class="row one"><div><label data-id for="o-lumps">Signing bonus or relocation lump sums</label><span class="hint" data-id id="o-lumps-h">One per line: name, amount; add ", untaxed" if it is not taxable</span><textarea data-id id="o-lumps" data-f="lumps" aria-describedby="o-lumps-h"></textarea></div></div>
+      <button type="button" class="secondary small remove">Remove this offer</button>
+    </fieldset>
+  </li>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>

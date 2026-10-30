@@ -1,0 +1,21 @@
+{
+  "_note": "SYNTHETIC EXAMPLE test fixture: deliberately broken made-up offers, one problem type per offer.",
+  "offers": [
+    {"label": "both pay (synthetic)", "city": "Toronto", "hourly_rate": 20, "hours_per_week": 40, "annual_salary": 50000,
+     "term_weeks": 16, "arrangement": "onsite", "commute": {"mode": "transit"}},
+    {"label": "no pay (synthetic)", "city": "Toronto", "term_weeks": 16, "arrangement": "onsite", "commute": {"mode": "transit"}},
+    {"label": "negative rent (synthetic)", "city": "Toronto", "hourly_rate": 20, "hours_per_week": 40, "term_weeks": 16,
+     "arrangement": "onsite", "rent_per_month": -5, "commute": {"mode": "transit"}},
+    {"label": "onsite none (synthetic)", "city": "Toronto", "hourly_rate": 20, "hours_per_week": 40, "term_weeks": 16,
+     "arrangement": "onsite", "commute": {"mode": "none"}},
+    {"label": "bad term (synthetic)", "city": "Toronto", "hourly_rate": 20, "hours_per_week": 40, "term_weeks": 15.5,
+     "arrangement": "onsite", "commute": {"mode": "transit"}},
+    {"label": "no rent (synthetic)", "city": "Nowhere", "hourly_rate": 20, "hours_per_week": 40, "term_weeks": 16,
+     "arrangement": "remote", "province": "Nunavut"},
+    {"label": "both pay (synthetic)", "city": "Waterloo", "hourly_rate": "twenty", "hours_per_week": 90, "term_weeks": 0,
+     "arrangement": "office", "commute": {"mode": "bike"},
+     "other_monthly": [{"amount": 10}, "phone"], "lump_sums": [{"name": "bonus", "amount": 100, "taxable": "yes"}]},
+    {"label": "remote transit (synthetic)", "city": "Ottawa", "hourly_rate": 20, "hours_per_week": 40, "term_weeks": 16,
+     "arrangement": "remote", "commute": {"mode": "transit", "km_per_day": 3}}
+  ]
+}

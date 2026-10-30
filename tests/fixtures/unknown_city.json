@@ -1,0 +1,9 @@
+{
+  "_note": "SYNTHETIC EXAMPLE test fixture: a made-up offer in a city with no preset, so everything comes from the file. Estimates only.",
+  "offers": [
+    {"label": "Halifax analyst (synthetic)", "city": "Halifax", "hourly_rate": 23, "hours_per_week": 37.5,
+     "term_weeks": 16, "arrangement": "hybrid", "rent_per_month": 1650,
+     "commute": {"mode": "transit", "transit_pass_per_month": 82, "_why": "comment keys are ignored"},
+     "notes": "an unknown field (should warn)"}
+  ]
+}

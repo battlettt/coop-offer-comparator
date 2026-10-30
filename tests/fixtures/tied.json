@@ -1,0 +1,11 @@
+{
+  "_note": "SYNTHETIC EXAMPLE test fixture: two made-up offers deliberately within $25/month of each other, plus a far-behind third. Estimates only.",
+  "offers": [
+    {"label": "A (synthetic)", "city": "Waterloo", "hourly_rate": 25, "hours_per_week": 40, "term_weeks": 16,
+     "arrangement": "onsite", "rent_per_month": 1200, "commute": {"mode": "transit"}},
+    {"label": "B (synthetic)", "city": "Waterloo", "hourly_rate": 25, "hours_per_week": 40, "term_weeks": 16,
+     "arrangement": "onsite", "rent_per_month": 1210, "commute": {"mode": "transit"}},
+    {"label": "C (synthetic)", "city": "Toronto", "hourly_rate": 25, "hours_per_week": 40, "term_weeks": 16,
+     "arrangement": "onsite", "commute": {"mode": "transit"}}
+  ]
+}

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coop-offer-comparator"
+version = "1.0.0"
+description = "Compare co-op job offers by estimated take-home pay after tax, rent and commuting (estimates, not advice)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [{name = "Marcel Slowly"}]
+dependencies = []
+
+[project.scripts]
+coop-compare = "coop_compare.cli:main"
+
+[tool.setuptools]
+packages = ["coop_compare"]

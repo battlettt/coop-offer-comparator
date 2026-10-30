@@ -1,0 +1,19 @@
+{
+  "_note": "SYNTHETIC EXAMPLE test fixture: made-up offers covering every province, both pay styles, driving, remote, and lump sums. Not real offers; all results are estimates.",
+  "offers": [
+    {"label": "Montreal salary (synthetic)", "city": "Montreal", "annual_salary": 62000, "term_weeks": 16,
+     "arrangement": "onsite", "commute": {"mode": "transit"},
+     "other_monthly": [{"name": "phone", "amount": 40}]},
+    {"label": "Vancouver remote (synthetic)", "city": "Vancouver", "hourly_rate": 31.5, "hours_per_week": 35,
+     "term_weeks": 12, "arrangement": "remote", "rent_per_month": 2200,
+     "lump_sums": [{"name": "relocation reimbursement", "amount": 1500, "taxable": false},
+                   {"name": "signing bonus", "amount": 750}]},
+    {"label": "Calgary driving (synthetic)", "city": "Calgary", "hourly_rate": 26, "hours_per_week": 40,
+     "term_weeks": 24, "arrangement": "onsite",
+     "commute": {"mode": "driving", "km_per_day": 34, "cost_per_km": 0.32, "parking_per_month": 90},
+     "moving_costs": [{"name": "deposit", "amount": 875}, {"name": "truck", "amount": 420.5}]},
+    {"label": "Ottawa high salary (synthetic)", "city": "Ottawa", "annual_salary": 240000, "term_weeks": 52,
+     "arrangement": "hybrid", "commute": {"mode": "driving", "km_per_day": 20, "cost_per_km": 0.4,
+     "parking_per_month": 150, "days_per_week": 2}}
+  ]
+}
